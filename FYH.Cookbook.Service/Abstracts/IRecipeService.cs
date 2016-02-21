@@ -14,5 +14,7 @@ namespace FYH.Cookbook.Service.Abstracts
         void AddRecipe(RecipeInfoViewModel viewModel);
 
         void UpdateRecipe(RecipeInfoViewModel viewModel);
+
+        void DeleteRecipe(int recipeId);
     }
 }

@@ -14,6 +14,6 @@ namespace FYH.Cookbook.Model.ViewModels
 
         public string Unit { get; set; }
 
-        public double Quantity { get; set; }
+        public string Quantity { get; set; }
     }
 }

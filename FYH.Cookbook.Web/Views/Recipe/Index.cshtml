@@ -92,10 +92,10 @@
     </div>
     <div class="row">
         <div class="col-lg-1 pull-right">
-            <button class="btn btn-lg btn-danger">Delete</button>
+            @Html.ActionLink("Delete", "Delete", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger" })
         </div>
         <div class="col-lg-1 pull-right">
-            <button class="btn btn-lg btn-danger">Edit</button>
+            @Html.ActionLink("Edit", "Edit", new { Model.RecipeId } , new { @class = "btn btn-lg btn-danger" })
         </div>
         <div class="col-lg-1 pull-right">
             <button class="btn btn-lg btn-danger">Print</button>

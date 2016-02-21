@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FYH.Cookbook.DAO.Abstracts;
+using FYH.Cookbook.Model.CustomException;
 using FYH.Cookbook.Model.DBEntity;
 using FYH.Cookbook.Model.ViewModels;
 using FYH.Cookbook.Service.Abstracts;
 using NHibernate.Criterion;
+using NHibernate.Util;
 
 namespace FYH.Cookbook.Service.Concretes
 {
@@ -18,6 +20,9 @@ namespace FYH.Cookbook.Service.Concretes
         public RecipeInfoViewModel GetRecipeInfo(int recipeId)
         {
             var model = BaseRepository.GetEntityById<Recipe>(recipeId);
+            if (model == null || model.IsDeleted)
+                throw new RecipeNotFoundException();
+
             var ingredientMappings = BaseRepository.GetEntityList<RecipeIngredientMapping>(new List<ICriterion>
             {
                 Restrictions.Eq(RecipeIngredientMapping.COL_RECIPEID, recipeId)
@@ -100,17 +105,89 @@ namespace FYH.Cookbook.Service.Concretes
         {
             var model = BaseRepository.GetEntityById<Recipe>(viewModel.RecipeId);
             if (model == null)
-                return;
+                throw new RecipeNotFoundException();
             model.Name = viewModel.Name;
             model.Description = viewModel.Description;
             model.Directions = viewModel.Directions;
             // Update recipe entity
             BaseRepository.UpdateEntity(model);
+
+            // Update ingredient mapping
+            var oldIngredients = BaseRepository.GetEntityList<RecipeIngredientMapping>(new List<ICriterion>
+            {
+                Restrictions.Eq(RecipeIngredientMapping.COL_RECIPEID, viewModel.RecipeId)
+            });
+            var oldIngredientIds = oldIngredients.Select(i => i.IngredientId);
+            var newIngredientIds = viewModel.Ingredients.Select(i => i.IngredientId);
+            oldIngredientIds.Where(i => !newIngredientIds.Contains(i)).ForEach(i =>
+            {
+                // delete old ingredient
+                BaseRepository.DeleteEntity(oldIngredients.First(j => j.IngredientId == i));
+            });
+            foreach (var ingredient in viewModel.Ingredients)
+            {
+                var oldIngredient = oldIngredients.FirstOrDefault(i => i.IngredientId == ingredient.IngredientId);
+                // update or add ingredient
+                BaseRepository.AddOrUpdateEntity(new RecipeIngredientMapping
+                {
+                    MappingId = oldIngredient == null ? 0 : oldIngredient.MappingId,
+                    IngredientId = ingredient.IngredientId,
+                    RecipeId = viewModel.RecipeId.Value,
+                    Quantity = ingredient.Quantity,
+                    Unit = ingredient.Unit
+                });
+            }
+
+            // Update tag mapping
+            var oldTags = BaseRepository.GetEntityList<RecipeTagMapping>(new List<ICriterion>
+            {
+                Restrictions.Eq(RecipeTagMapping.COL_RECIPEID, viewModel.RecipeId)
+            });
+            var oldTagIds = oldTags.Select(i => i.TagId);
+            var newTagIds = viewModel.TagIds;
+            oldTagIds.Where(i => !newTagIds.Contains(i)).ForEach(i =>
+            {
+                // delete old tag
+                BaseRepository.DeleteEntity(oldTags.First(j => j.TagId == i));
+            });
+            foreach (var tagId in viewModel.TagIds.Where(i => !oldTagIds.Contains(i)))
+            {
+                // add tag
+                BaseRepository.AddOrUpdateEntity(new RecipeTagMapping
+                {
+                    TagId = tagId,
+                    RecipeId = viewModel.RecipeId.Value
+                });
+            }
+
+            // Update image mapping
+            var oldImages = BaseRepository.GetEntityList<Image>(new List<ICriterion>
+            {
+                Restrictions.Eq(Image.COL_RECIPEID, viewModel.RecipeId)
+            });
+            var oldImageIds = oldImages.Select(i => i.ImageId.GetValueOrDefault());
+            var newImageIds = viewModel.Images.Select(i => i.ImageId).ToList();
+            oldImageIds.Where(i => !newImageIds.Contains(i)).ForEach(i =>
+            {
+                // delete old image
+                BaseRepository.DeleteEntity(oldImages.First(j => j.ImageId == i));
+            });
+            foreach (var image in viewModel.Images)
+            {
+                // update image
+                BaseRepository.AddOrUpdateEntity(new Image
+                {
+                    ImageId = image.ImageId,
+                    RecipeId = viewModel.RecipeId.Value
+                });
+            }
         }
 
         public void DeleteRecipe(int recipeId)
         {
             var model = BaseRepository.GetEntityById<Recipe>(recipeId);
+            if (model == null)
+                throw new RecipeNotFoundException();
             model.IsDeleted = true;
             BaseRepository.UpdateEntity(model);
         }

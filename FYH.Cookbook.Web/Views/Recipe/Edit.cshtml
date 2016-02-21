@@ -1,8 +1,147 @@
-﻿
+﻿@using System.Web.UI.WebControls
+@model FYH.Cookbook.Model.ViewModels.RecipeInfoViewModel
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = (Model.RecipeId > 0 ? "Update" : "Create") + " Recipe";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section styles{
+    @Styles.Render("~/Content/css/select2.min.css")
+    @Styles.Render("~/Content/select2-bootstrap.css")
+}
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/recipe/recipe.edit.js")
+}
 
-<h2>Edit</h2>
+<h2>@ViewBag.Title</h2>
 
+<div class="row">
+    <div class="col-sm-7">
+        @using (Html.BeginForm("Edit", "Recipe", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            @Html.HiddenFor(m => m.RecipeId)
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Name" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Name)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Description, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "Description" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Ingredients, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    <div class="ingredient-list">
+                        @{ var index = 0; }
+                        @foreach (var ingredient in Model.Ingredients)
+                        {
+                            <div class="ingredient-item">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <select class="form-control select-ingredient ingredient-already required" name="Ingredients[@index].IngredientId" placeholder="Click To Choose">
+                                            <option value="@ingredient.IngredientId">@ingredient.Name</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="number" class="form-control ingredient-quantity required" name="Ingredients[@index].Quantity" placeholder="Quantity" value="@ingredient.Quantity" />
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control ingredient-unit required" name="Ingredients[@index].Unit" placeholder="Unit" value="@ingredient.Unit" />
+                                    </div>
+                                    <button type="button" class="btn btn-danger col-sm-1 delete-ingredient"><span class="glyphicon glyphicon-trash"></span></button>
+                                </div>
+                            </div>
+                            {
+                                index++;
+                            }
+                        }
+                    </div>
+                    <div class="template ingredient-item-template">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <select class="form-control select-ingredient required" placeholder="Click To Choose"></select>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control ingredient-quantity required" placeholder="Quantity" />
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control ingredient-unit required" placeholder="Unit" />
+                            </div>
+                            <button type="button" class="btn btn-danger col-sm-1 delete-ingredient"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-default" id="btnAddIngredient"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Directions, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextAreaFor(m => m.Directions, new { @class = "form-control", placeholder = "Directions" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Directions)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Tags</label>
+                <div class="col-sm-9">
+                    <select id="TagIds" name="TagIds" class="form-control" placeholder="Tags">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <option value="@tag.TagId">@tag.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Images, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    <div class="iamges-row">
+                        <div class="row">
+                            <div class="image-thumbnail-list">
+                                @foreach (var image in Model.Images)
+                                {
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="thumbnail recipe-thumbnail">
+                                            <img src="@image.Url" alt="@image.Description">
+                                            <div class="caption">
+                                                <button type="button" class="btn btn-sm btn-danger" role="button" onclick="this.parentElement.parentElement.parentElement.remove();"><span class="glyphicon glyphicon-trash"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="template image-item-template">
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="thumbnail recipe-thumbnail">
+                                        <img />
+                                        <div class="caption">
+                                            <button type="button" class="btn btn-sm btn-danger" role="button" onclick="this.parentElement.parentElement.parentElement.remove();"><span class="glyphicon glyphicon-trash"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="thumbnail recipe-thumbnail">
+                                    <div class="image-upload">
+                                        <a href="#"><span class="glyphicon glyphicon-upload"></span>Upload</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-danger btn-lg" id="btnSubmit">@(Model.RecipeId > 0 ? "Update" : "Create")</button>
+                </div>
+            </div>
+                            }
+    </div>
+</div>

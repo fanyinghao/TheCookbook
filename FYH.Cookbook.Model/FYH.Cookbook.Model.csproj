@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\PagingResult.cs" />
+    <Compile Include="CustomException\CbBaseException.cs" />
+    <Compile Include="CustomException\RecipeNotFoundException.cs" />
     <Compile Include="DBEntity\Image.cs" />
     <Compile Include="DBEntity\Ingredient.cs" />
     <Compile Include="DBEntity\Recipe.cs" />

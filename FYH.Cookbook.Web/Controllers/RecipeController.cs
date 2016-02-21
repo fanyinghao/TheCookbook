@@ -17,6 +17,12 @@ namespace FYH.Cookbook.Web.Controllers
             return View(viewModel);
         }
 
+        // GET: Recipe Create Page
+        public ActionResult Create()
+        {
+            return View("Edit", new RecipeInfoViewModel());
+        }
+
         // GET: Recipe Edit Page
         public ActionResult Edit(int? recipeId)
         {
@@ -26,26 +32,22 @@ namespace FYH.Cookbook.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Edit(RecipeInfoViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-                RecipeService.UpdateRecipe(viewModel);
-            return View(viewModel);
-        }
-
-        // GET: Recipe Create Page
-        public ActionResult Create()
-        {
-            return View(new RecipeInfoViewModel());
-        }
-
-        [HttpPost]
-        public ActionResult Create(RecipeInfoViewModel viewModel)
         {
             viewModel.Ingredients = viewModel.Ingredients.Where(i => i.IngredientId > 0).ToList();
             if (!ModelState.IsValid) return View(viewModel);
-            RecipeService.AddRecipe(viewModel);
-            return View("Index", viewModel);
+            if (viewModel.RecipeId > 0)
+                RecipeService.UpdateRecipe(viewModel);
+            else
+                RecipeService.AddRecipe(viewModel);
+            return Redirect("/Recipe?RecipeId=" + viewModel.RecipeId);
+        }
+
+        public ActionResult Delete(int recipeId)
+        {
+            RecipeService.DeleteRecipe(recipeId);
+            return Redirect("/Home");
         }
     }
 }

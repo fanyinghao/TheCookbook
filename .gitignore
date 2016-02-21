@@ -234,3 +234,5 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/FYH.Cookbook.Web/Web.Release.config
+/FYH.Cookbook.Web/Properties/PublishProfiles

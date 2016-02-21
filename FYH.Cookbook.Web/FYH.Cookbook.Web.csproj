@@ -315,7 +315,6 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\quill.min.js" />
     <Content Include="Scripts\recipe\recipe.detail.js" />
-    <Content Include="Scripts\recipe\recipe.edit.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -350,9 +349,8 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Recipe\Index.cshtml" />
-    <Content Include="Views\Recipe\Create.cshtml" />
-    <Content Include="Scripts\recipe\recipe.create.js" />
     <Content Include="Views\Recipe\Edit.cshtml" />
+    <Content Include="Scripts\recipe\recipe.edit.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
