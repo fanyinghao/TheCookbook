@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- nhibernate -->
+<objects xmlns="http://www.springframework.net" xmlns:db="http://www.springframework.net/database" xmlns:tx="http://www.springframework.net/tx" xmlns:aop="http://www.springframework.net/aop">
+
+  <!-- config data access -->
+  <object type="Spring.Objects.Factory.Config.PropertyPlaceholderConfigurer, Spring.Core">
+    <property name="ConfigSections" value="databaseSettings" />
+  </object>
+  <db:provider id="dbprovider" provider="System.Data.SqlClient" connectionString="${connectionstring.mssql}" />
+
+  <!-- config SessionFactory -->
+  <!-- SessionFactoryObjectHtmlExtension use NHibernate.Mapping.Attributes -->
+  <object id="sessionfactory" type="FYH.Cookbook.Core.Extensions.SessionFactoryObjectHtmlExtension, FYH.Cookbook.Core">
+    <property name="DbProvider" ref="dbprovider" />
+    <!-- Using NHibernate.Mapping.Attributes -->
+    <!-- MappingAssemblyNames is the property of SessionFactoryObjectHtmlExtension -->
+    <property name="MappingAssemblyNames">
+      <list>
+        <value>FYH.Cookbook.Model</value>
+      </list>
+    </property>
+    <property name="HibernateProperties">
+      <dictionary>
+        <entry key="connection.driver_class" value="NHibernate.Driver.SqlClientDriver" />
+        <entry key="connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
+        <entry key="dialect" value="NHibernate.Dialect.MsSql2008Dialect" />
+        <entry key="show_sql" value="true" />
+        <entry key="command_timeout" value="60" />
+        <entry key="current_session_context_class" value="Spring.Data.NHibernate.SpringSessionContext, Spring.Data.NHibernate4" />
+        <entry key="cache.provider_class" value="NHibernate.Caches.SysCache.SysCacheProvider, NHibernate.Caches.SysCache"/>
+        <entry key="cache.use_second_level_cache" value="true" />
+        <entry key="cache.use_query_cache" value="false" />
+        <entry key="cache.region_prefix" value="FYH.Cookbook.DB.Cache" />
+      </dictionary>
+    </property>
+  </object>
+
+  <!-- Config hibernateTemplate -->
+  <object id="hibernatetemplate" type="Spring.Data.NHibernate.Generic.HibernateTemplate, Spring.Data.NHibernate4">
+    <property name="SessionFactory" ref="sessionfactory" />
+    <property name="TemplateFlushMode" value="Auto" />
+    <property name="CacheQueries" value="true" />
+  </object>
+
+</objects>

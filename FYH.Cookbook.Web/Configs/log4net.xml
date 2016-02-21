@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<log4net debug="false">
+  <appender name="logfile" type="log4net.Appender.RollingFileAppender, log4net">
+    <param name="File" value="logs/logfile.log" />
+    <param name="Encoding" value="utf-8" />
+    <param name="AppendToFile" value="true" />
+    <param name="RollingStyle" value="Date" />
+    <param name="DatePattern" value="yyyy-MM-dd" />
+    <param name="StaticLogFileName" value="true" />
+    <layout type="log4net.Layout.PatternLayout, log4net">
+      <param name="ConversionPattern" value="%n%d{yyyy-MM-dd HH\:mm\:ss,fff} [%p] - %m%n" />
+    </layout>
+  </appender>
+
+  <!-- OFF > FATAL > ERROR > WARN > INFO > DEBUG > ALL -->
+  <root>
+    <level value="ALL"/>
+    <appender-ref ref="logfile"/>
+  </root>
+
+  <logger name="logfile">
+    <level value="ALL" />
+    <appender-ref ref="logfile" />
+  </logger>
+</log4net>

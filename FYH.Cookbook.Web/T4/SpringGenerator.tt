@@ -1,0 +1,63 @@
+<#@ template language="C#" debug="false" hostspecific="false" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(SolutionDir)FYH.Cookbook.Web\bin\FYH.Cookbook.DAO.dll" #>
+<#@ assembly name="$(SolutionDir)FYH.Cookbook.Web\bin\FYH.Cookbook.Service.dll" #>
+<#@ assembly name="$(SolutionDir)FYH.Cookbook.Web\bin\FYH.Cookbook.Web.dll" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Reflection" #>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="SpringTemplate.tt" #>
+<#@ include file="SpringConfig.tt" #>
+<#
+    var projectDir = Host.ResolveAssemblyReference("$(ProjectDir)");
+
+    // file path
+    var savePath = Path.Combine(projectDir, "Configs");
+    if(!Directory.Exists(savePath))
+        Directory.CreateDirectory(savePath);
+
+    // class names
+    var addedClassNames = new List<string> { "hibernatetemplate" };
+    // file names
+    var fileNames = new List<string> { "nhibernate.xml" };
+
+    // generated config file
+    var dlls = new Dictionary<string, IList<string>>
+    {
+        { "DAO", new List<string> { "repository" } },
+        { "Service", new List<string> { "service", "notify", "factory" } },
+        { "Web", new List<string> { "controller" } }
+    };
+    foreach (var item in dlls)
+    {
+        var daoAssemblyTypes = Assembly.LoadFrom(string.Format("{0}bin\\FYH.Cookbook.{1}.dll", projectDir, item.Key))
+            .ExportedTypes
+            .Where(t =>
+            {
+                var isOk = t.IsClass;
+                if (!isOk) return false;
+                
+                isOk = false;
+                foreach (var v in item.Value)
+                    if (t.Name.ToLower().EndsWith(v))
+                    {
+                        isOk = true;
+                        break;
+                    }
+                return isOk;
+            })
+            .OrderBy(t => t.Name);
+        addedClassNames = addedClassNames.Concat(daoAssemblyTypes.Select(t => t.Name.ToLower())).ToList();
+        var fileName = string.Format(@"{0}.xml", item.Key.ToLower());
+        var template = new SpringTemplate(addedClassNames, daoAssemblyTypes);
+        template.Output.Encoding = Encoding.UTF8;
+        template.RenderToFile(string.Format(@"{0}\{1}", savePath, fileName));
+        fileNames.Add(fileName);
+    }
+    var config = new SpringConfig(fileNames);
+    config.Output.Encoding = Encoding.UTF8;
+    config.RenderToFile(string.Format(@"{0}\spring.xml", savePath));
+#>

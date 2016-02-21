@@ -1,0 +1,49 @@
+﻿.mr10 {
+  margin-right: 10px !important;
+}
+/* refresh */
+.cb-refresh:before {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1;
+  font-family: 'FontAwesome';
+  content: '\f021';
+  -webkit-animation: refresh .7s linear infinite;
+  -moz-animation: refresh .7s linear infinite;
+  -o-animation: refresh .7s linear infinite;
+  animation: refresh .7s linear infinite;
+}
+/* modal */
+.cb-modal .modal-content .modal-header {
+  border-bottom: 1px solid #c7c7c7;
+}
+.cb-modal .modal-content .modal-body {
+  padding: 18px 12px;
+}
+/* masklayer */
+.cb-masklayer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.cb-masklayer .cb-maskmsg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -20px;
+  margin-left: -31px;
+  padding: 10px;
+  width: auto;
+  border: 3px solid rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  display: block;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

@@ -1,0 +1,41 @@
+<#@ template language="C#" debug="false" hostspecific="false" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="$(SolutionDir)FYH.Cookbook.Model\bin\Debug\FYH.Cookbook.Core.dll" #>
+<#@ import namespace="FYH.Cookbook.Core.DB" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="EntityTemplate.tt" #>
+<#
+    var projectDir = Host.ResolveAssemblyReference("$(ProjectDir)");
+
+    // file path
+    var savePath = Path.Combine(projectDir, "DBEntity");
+    if(!Directory.Exists(savePath))
+        Directory.CreateDirectory(savePath);
+
+    // connection string
+    var connString = @"Data Source=(localdb)\ProjectsV12;Initial Catalog=FYH.Cookbook.Database;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+    var schema = new MSSqlDBSchema(connString);
+
+    // exclude tables
+    var excludeTableNames = new string[]
+    {
+        
+    };
+
+    // generate entity
+    foreach(var table in schema.Tables) {
+        if (excludeTableNames.Contains(table.TableName))
+            continue;
+
+        var template = new ModelTemplate(table, schema.ColumnDic[table.TableName], schema.ForeignDic[table.TableName]);
+        template.Output.Encoding = Encoding.UTF8;
+        template.RenderToFile(string.Format(@"{0}\{1}.cs", savePath, table.TableName));
+    }
+#>

@@ -1,0 +1,97 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.list-container {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.recipe-image-item {
+    height: 300px;
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.recipe-image {
+    width: 100%;
+}
+
+.recipe-content {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.btn-lg {
+    width: 90px;
+}
+
+.input-validation-error, .has-error .input-validation-error, .has-error .form-control {
+    border: 1px solid #b72e25;
+}
+
+    .input-validation-error.active, .input-validation-error:active, .input-validation-error:focus, .has-error .input-validation-error.active, .has-error .input-validation-error:active, .has-error .input-validation-error:focus, .has-error .form-control.active, .has-error .form-control:active, .has-error .form-control:focus {
+        border: 1px solid #b72e25;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 1px #b72e25;
+        -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 1px #b72e25;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 1px #b72e25;
+    }
+
+.field-validation-error {
+    color: #b72e25;
+    font-size: 12px;
+    margin-bottom: 0;
+    display: block;
+    padding-top: 3px;
+}
+
+.ingredient-item, .iamges-row {
+    margin-bottom: 15px;
+}
+
+    .ingredient-item .row {
+        margin-right: 0;
+    }
+
+.recipe-thumbnail {
+    height: 166px;
+    text-align: center;
+}
+
+    .recipe-thumbnail .image-upload {
+        margin-top: 50%;
+    }
+
+.template {
+    display: none;
+}
+
+/*@media print {
+    .div-to-print {
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 18px;
+    }
+}*/

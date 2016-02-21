@@ -1,0 +1,104 @@
+﻿@model FYH.Cookbook.Model.ViewModels.RecipeInfoViewModel
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    @Scripts.Render("~/Scripts/jspdf.min.js")
+    @Scripts.Render("~/Scripts/recipe/recipe_jspdf.js")
+}
+
+<div class="row">
+    @if (Model.Images.Any())
+    {
+        <div id="carousel-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                @for (var i = 0; i < Model.Images.Count; i++)
+                {
+                    <li data-target="#carousel-generic" data-slide-to="@i" @Html.Raw(i == 0 ? "class=\"active\"" : "")></li>
+                }
+            </ol>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                @for (var i = 0; i < Model.Images.Count; i++)
+                {
+                    <div class="recipe-image-item item @Html.Raw(i == 0 ? "active" : "")">
+                        <img class="recipe-image" src="@Model.Images[i].Url" alt="@Model.Images[i].Description">
+                        <div class="carousel-caption">
+                            @Model.Images[i].Description
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    }
+
+    <div class="recipe-content div-to-print">
+        <h1>@Model.Name</h1>
+        @if (Model.Tags.Any())
+        {
+            <div class="recipe-tags">
+                @foreach (var item in Model.Tags)
+                {
+                    <a href="#" class="label label-danger">@item.Name</a>
+                }
+            </div>
+        }
+        <h4>@Model.Description</h4>
+        <h3>Ingredients</h3>
+        <div class="row">
+            @if (Model.Ingredients.Any())
+            {
+                <div class="col-lg-8">
+                    <div class="recipe-ingredient">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                            </tr>
+                            @foreach (var item in Model.Ingredients)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Unit</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+        <h3>Directions</h3>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="recipe-instruction">
+                    @Html.Raw(Model.Directions)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-1 pull-right">
+            <button class="btn btn-lg btn-danger">Delete</button>
+        </div>
+        <div class="col-lg-1 pull-right">
+            <button class="btn btn-lg btn-danger">Edit</button>
+        </div>
+        <div class="col-lg-1 pull-right">
+            <button class="btn btn-lg btn-danger">Print</button>
+        </div>
+    </div>
+</div>

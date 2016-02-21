@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "FYH.Cookbook.Database", "FYH.Cookbook.Database\FYH.Cookbook.Database.sqlproj", "{75DA1247-439D-4260-950E-B398ADE8F553}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.Web", "FYH.Cookbook.Web\FYH.Cookbook.Web.csproj", "{A82E29A5-2515-41FA-8D6D-2134E6565D65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.Web.Tests", "FYH.Cookbook.Web.Tests\FYH.Cookbook.Web.Tests.csproj", "{8DAD581B-A35D-4DEB-B252-8F6BB2A3A89C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.DAO", "FYH.Cookbook.DAO\FYH.Cookbook.DAO.csproj", "{DE91C88F-D14F-459E-8249-AFB37531BF9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.Model", "FYH.Cookbook.Model\FYH.Cookbook.Model.csproj", "{0885D57A-A930-420E-9A8E-8C8219E7F30A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.Core", "FYH.Cookbook.Core\FYH.Cookbook.Core.csproj", "{49D39342-DB58-408D-85FE-38DD14CBD92F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FYH.Cookbook.Service", "FYH.Cookbook.Service\FYH.Cookbook.Service.csproj", "{77F45326-D84F-4FBD-9852-CB9EE736A779}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75DA1247-439D-4260-950E-B398ADE8F553}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A82E29A5-2515-41FA-8D6D-2134E6565D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A82E29A5-2515-41FA-8D6D-2134E6565D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A82E29A5-2515-41FA-8D6D-2134E6565D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A82E29A5-2515-41FA-8D6D-2134E6565D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DAD581B-A35D-4DEB-B252-8F6BB2A3A89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DAD581B-A35D-4DEB-B252-8F6BB2A3A89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DAD581B-A35D-4DEB-B252-8F6BB2A3A89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DAD581B-A35D-4DEB-B252-8F6BB2A3A89C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE91C88F-D14F-459E-8249-AFB37531BF9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE91C88F-D14F-459E-8249-AFB37531BF9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE91C88F-D14F-459E-8249-AFB37531BF9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE91C88F-D14F-459E-8249-AFB37531BF9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0885D57A-A930-420E-9A8E-8C8219E7F30A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0885D57A-A930-420E-9A8E-8C8219E7F30A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0885D57A-A930-420E-9A8E-8C8219E7F30A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0885D57A-A930-420E-9A8E-8C8219E7F30A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49D39342-DB58-408D-85FE-38DD14CBD92F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49D39342-DB58-408D-85FE-38DD14CBD92F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49D39342-DB58-408D-85FE-38DD14CBD92F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49D39342-DB58-408D-85FE-38DD14CBD92F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77F45326-D84F-4FBD-9852-CB9EE736A779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77F45326-D84F-4FBD-9852-CB9EE736A779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77F45326-D84F-4FBD-9852-CB9EE736A779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77F45326-D84F-4FBD-9852-CB9EE736A779}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
