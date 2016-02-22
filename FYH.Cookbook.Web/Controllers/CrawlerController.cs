@@ -26,7 +26,7 @@ namespace FYH.Cookbook.Web.Controllers
             request.UserAgent =
                 "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
             request.Host = "cooking.nytimes.com";
-            request.Proxy = new WebProxy(new Uri("http://127.0.0.1:8787"));
+            //request.Proxy = new WebProxy(new Uri("http://127.0.0.1:8787"));
             var response = request.GetResponse();
 
             var html = string.Empty;
@@ -45,7 +45,7 @@ namespace FYH.Cookbook.Web.Controllers
                 request.UserAgent =
                     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36";
                 request.Host = "cooking.nytimes.com";
-                request.Proxy = new WebProxy(new Uri("http://127.0.0.1:8787"));
+                //request.Proxy = new WebProxy(new Uri("http://127.0.0.1:8787"));
                 response = request.GetResponse();
 
                 html = string.Empty;
