@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Recipe]
 (
 	[RecipeId] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [Name] VARCHAR(50) NOT NULL, 
+    [Name] VARCHAR(MAX) NOT NULL, 
     [Description] VARCHAR(MAX) NULL, 
     [Directions] VARCHAR(MAX) NULL, 
     [IsDeleted] BIT NOT NULL DEFAULT 0, 

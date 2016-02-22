@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FYH.Cookbook.Model.ViewModels;
 using FYH.Cookbook.Service.Abstracts;
 
 namespace FYH.Cookbook.Web.Controllers
@@ -11,9 +12,9 @@ namespace FYH.Cookbook.Web.Controllers
     {
         private IIngredientService IngredientService { get; set; }
         // GET: Ingredient
-        public ActionResult SearchIngredient(string keyword, int page, int rows)
+        public ActionResult SearchIngredient(SearchParametersModel parameters)
         {
-            return Json(IngredientService.SerachIngredient(keyword, page, rows));
+            return Json(IngredientService.SearchIngredient(parameters.Keyword, parameters.Page, parameters.Rows));
         }
     }
 }

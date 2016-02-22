@@ -13,14 +13,16 @@ using NHibernate.Criterion;
 
 namespace FYH.Cookbook.Service.Concretes
 {
-    public class TagService: ITagService
+    public class TagService : ITagService
     {
         private IBaseRepository BaseRepository { get; set; }
 
-        public PagingResult<TagInfo> SerachTag(string keyword, int page, int rows)
+        public PagingResult<TagInfo> SearchTag(string keyword, int page, int rows)
         {
             keyword = keyword ?? string.Empty;
-            var list = BaseRepository.GetEntityPagingList<Tag>(new List<ICriterion>
+            var list = BaseRepository.GetEntityPagingList<Tag>(
+            string.IsNullOrEmpty(keyword) ? new List<ICriterion>() :
+            new List<ICriterion>
             {
                 Restrictions.Or(
                     Restrictions.Gt(Projections.SqlFunction("LOCATE",

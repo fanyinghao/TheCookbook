@@ -1,37 +1,87 @@
-﻿@{
+﻿@model FYH.Cookbook.Model.ViewModels.SearchRecipeParametersModel
+@{
     ViewBag.Title = "Home Page";
 }
-
+@section styles
+{
+    @Styles.Render("~/Content/font-awesome.min.css")
+    @Styles.Render("~/Content/awesome-bootstrap-checkbox.css")
+}
+@section scripts{
+    @Scripts.Render("~/Scripts/knockout-3.4.0.js")
+    @Scripts.Render("~/Scripts/home/index.js")
+}
 <div class="jumbotron">
-    <div class="row">
-        <div class="col-lg-9">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                    <button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                </span>
+    @using (Html.BeginForm("SearchRecipe", "Recipe", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <div class="row">
+            <div class="col-lg-9">
+                @Html.HiddenFor(m => m.Order)
+                @Html.HiddenFor(m => m.SortBy)
+                <div class="input-group input-group-lg">
+                    @Html.TextBoxFor(m => m.Keyword, new { @class = "form-control", placeholder = "Search for..." })
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
+        <div data-bind="visible: !showNoResult()">
+            <h4>Ingredient</h4>
+            <div class="row checkbox-ingredient-row  checkbox-expand" data-bind="foreach: ingredients">
+                <div class="col-md-2 checkbox-ingredient-col">
+                    <div class="checkbox checkbox-success">
+                        <input type="checkbox" class="styled checkbox-ingredient-item" data-bind="click: $root.filter, checked: Checked,value: IngredientId, attr: { id: 'cb_ingredient_' + IngredientId }">
+                        <label data-bind="text: Name, attr: { for: 'cb_ingredient_' + IngredientId }"></label>
+                    </div>
+                </div>
+            </div>
+            <h4>Tag</h4>
+            <div class="row checkbox-tag-row checkbox-expand" data-bind="foreach: tags">
+                <div class="col-md-2 checkbox-tag-col">
+                    <div class="checkbox checkbox-danger">
+                        <input type="checkbox" class="styled checkbox-tag-item" data-bind="click: $root.filter, checked: Checked, value: TagId, attr: { id: 'cb_tag_' + TagId }">
+                        <label data-bind="text: Name, attr: { for: 'cb_tag_' + TagId }"></label>
+                    </div>
+                </div>
+            </div>
+            <h4>Sort</h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default sort-by sort-by-date-desc"><span class="glyphicon glyphicon-sort-by-order"></span>Newest</button>
+                        <button type="button" class="btn btn-default sort-by sort-by-date-asc"><span class="glyphicon glyphicon-sort-by-order-alt"></span>Oldest</button>
+                        <button type="button" class="btn btn-default sort-by sort-by-name-asc"><span class="glyphicon glyphicon-sort-by-alphabet"></span>Name</button>
+                        <button type="button" class="btn btn-default sort-by sort-by-name-desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>Name</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: showNoResult()">
+            <h4>No Result, Please Search Again!</h4>
+        </div>
+    }
 </div>
 
 <div class="list-container">
-    <div class="list-group">
-        <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">List group item heading</h4>
-            <p class="list-group-item-text">...</p>
+    <div class="list-group" data-bind="foreach: list">
+        <a class="list-group-item" data-bind="attr:{ href: '/Recipe?RecipeId=' + RecipeId }">
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" data-bind="attr: { alt: Name, src: ImageUrl || 'data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDMxNS41OCAzMTUuNTgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMxNS41OCAzMTUuNTg7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNjRweCIgaGVpZ2h0PSI2NHB4Ij4KPGc+Cgk8cGF0aCBkPSJNMzEwLjU4LDMzLjMzMUg1Yy0yLjc2MSwwLTUsMi4yMzgtNSw1djIzOC45MThjMCwyLjc2MiwyLjIzOSw1LDUsNWgzMDUuNThjMi43NjMsMCw1LTIuMjM4LDUtNVYzOC4zMzEgICBDMzE1LjU4LDM1LjU2OSwzMTMuMzQzLDMzLjMzMSwzMTAuNTgsMzMuMzMxeiBNMjg1LjU4LDI0Mi4zODZsLTY4Ljc2Ni03MS4yMTRjLTAuNzYtMC43ODUtMi4wMDMtMC44MzYtMi44MjMtMC4xMTRsLTQ3LjY5NSw0MS45NzkgICBsLTYwLjk2Mi03NS4wNjFjLTAuMzk2LTAuNDktMC45NzUtMC43Ny0xLjYzLTAuNzU2Yy0wLjYzMSwwLjAxMy0xLjIyLDAuMzE2LTEuNTk3LDAuODIyTDMwLDIzNC43OTdWNjMuMzMxaDI1NS41OFYyNDIuMzg2eiIgZmlsbD0iI0Q4MDAyNyIvPgoJPHBhdGggZD0iTTIxMC4wNTksMTM1LjU1NWMxMy41MzgsMCwyNC41MjktMTAuOTgyLDI0LjUyOS0yNC41MzFjMC0xMy41NDUtMTAuOTkxLTI0LjUzMy0yNC41MjktMjQuNTMzICAgYy0xMy41NDksMC0yNC41MjgsMTAuOTg4LTI0LjUyOCwyNC41MzNDMTg1LjUzMSwxMjQuNTcyLDE5Ni41MTEsMTM1LjU1NSwyMTAuMDU5LDEzNS41NTV6IiBmaWxsPSIjRDgwMDI3Ii8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=='}" />
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" data-bind="text: Name"></h4>
+                    <span data-bind="text: Description"></span>
+                </div>
+            </div>
         </a>
-        <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">List group item heading</h4>
-            <p class="list-group-item-text">...</p>
-        </a>
-        <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">List group item heading</h4>
-            <p class="list-group-item-text">...</p>
-        </a>
-        <a href="#" class="list-group-item">
-            <h4 class="list-group-item-heading">List group item heading</h4>
-            <p class="list-group-item-text">...</p>
-        </a>
+    </div>
+</div>
+
+<div class="operation-container">
+    <div class="text-right">
+        <p class="text-grey" data-bind="visible: showRenderDone(), text: 'Done! Total of ' + total()"></p>
+        <button class="btn btn-lg btn-danger" data-bind="click: nextPage, visible: !showRenderDone()">More</button>
     </div>
 </div>

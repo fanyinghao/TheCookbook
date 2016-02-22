@@ -77,7 +77,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstracts\IBaseRepository.cs" />
+    <Compile Include="Abstracts\IIngredientRepository.cs" />
+    <Compile Include="Abstracts\IRecipeRepository.cs" />
+    <Compile Include="Abstracts\ITagRepository.cs" />
     <Compile Include="Concretes\BaseRepository.cs" />
+    <Compile Include="Concretes\IngredientRepository.cs" />
+    <Compile Include="Concretes\RecipeRepository.cs" />
+    <Compile Include="Concretes\TagRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +91,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FYH.Cookbook.Core\FYH.Cookbook.Core.csproj">
+      <Project>{49D39342-DB58-408D-85FE-38DD14CBD92F}</Project>
+      <Name>FYH.Cookbook.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FYH.Cookbook.Model\FYH.Cookbook.Model.csproj">
       <Project>{0885D57A-A930-420E-9A8E-8C8219E7F30A}</Project>
       <Name>FYH.Cookbook.Model</Name>

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using FYH.Cookbook.Model.Common;
+using FYH.Cookbook.Model.Enum;
 using NHibernate.Criterion;
+using NHibernate.Type;
 
 namespace FYH.Cookbook.DAO.Abstracts
 {
@@ -30,7 +32,7 @@ namespace FYH.Cookbook.DAO.Abstracts
         /// Execute SQL(Update or Delete)
         /// </summary>
         /// <param name="sql"></param>
-        /// <param name="parameters">允许为 null</param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
         int ExecuteUpdate(string sql, IDictionary<string, object> parameters);
 
@@ -148,6 +150,98 @@ namespace FYH.Cookbook.DAO.Abstracts
         /// <param name="useSecondLevelCache">Is Use NHibernate Second Level Cache</param>
         /// <returns></returns>
         PagingResult<T> GetEntityPagingList<T>(IEnumerable<ICriterion> criterions, IEnumerable<Order> orders, int firstIndex = 0, int maxCount = int.MaxValue, bool useSecondLevelCache = true);
+
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="orders"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="scalars"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, IType> scalars, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="parameters"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="orders"></param>
+        /// <param name="scalars"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, IType> scalars, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="orders"></param>
+        /// <param name="parameters"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="scalars"></param>
+        /// <param name="parameters"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, IType> scalars, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue);
+        
+        /// <summary>
+        /// Execute SQL Query
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="orders"></param>
+        /// <param name="scalars"></param>
+        /// <param name="parameters"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, IType> scalars, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue);
 
     }
 }

@@ -17,9 +17,11 @@ namespace FYH.Cookbook.Service.Concretes
     {
         private IBaseRepository BaseRepository { get; set; }
 
-        public PagingResult<IngredientInfo> SerachIngredient(string keyword, int page, int rows)
+        public PagingResult<IngredientInfo> SearchIngredient(string keyword, int page, int rows)
         {
-            var list = BaseRepository.GetEntityPagingList<Ingredient>(new List<ICriterion>
+            var list = BaseRepository.GetEntityPagingList<Ingredient>(
+            string.IsNullOrEmpty(keyword) ? new List<ICriterion>() : 
+            new List<ICriterion>
             {
                 Restrictions.Or(
                     Restrictions.Gt(Projections.SqlFunction("LOCATE",

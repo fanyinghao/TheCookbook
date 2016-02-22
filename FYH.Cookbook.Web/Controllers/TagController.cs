@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FYH.Cookbook.Model.ViewModels;
 using FYH.Cookbook.Service.Abstracts;
 
 namespace FYH.Cookbook.Web.Controllers
@@ -11,9 +12,9 @@ namespace FYH.Cookbook.Web.Controllers
     {
         private ITagService TagService { get; set; }
         // GET: Tag
-        public ActionResult SearchTag(string keyword, int page, int rows)
+        public ActionResult SearchTag(SearchParametersModel parameters)
         {
-            return Json(TagService.SerachTag(keyword, page, rows));
+            return Json(TagService.SearchTag(parameters.Keyword, parameters.Page, parameters.Rows));
         }
     }
 }

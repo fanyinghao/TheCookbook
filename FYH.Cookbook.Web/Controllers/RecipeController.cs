@@ -49,5 +49,17 @@ namespace FYH.Cookbook.Web.Controllers
             RecipeService.DeleteRecipe(recipeId);
             return Redirect("/Home");
         }
+
+        [HttpPost]
+        public ActionResult SearchRecipe(SearchRecipeParametersModel parameters)
+        {
+            return Json(RecipeService.SearchRecipe(parameters.Keyword, parameters.IngredientIds, parameters.TagIds, parameters.SortBy, parameters.Order.GetValueOrDefault(), parameters.Page, parameters.Rows));
+        }
+
+        [HttpPost]
+        public ActionResult SearchIngredientsAndTags(SearchRecipeParametersModel parameters)
+        {
+            return Json(RecipeService.SearchIngredientsAndTags(parameters.Keyword, parameters.IngredientIds, parameters.TagIds));
+        }
     }
 }

@@ -10,6 +10,6 @@ namespace FYH.Cookbook.Service.Abstracts
 {
     public interface ITagService
     {
-        PagingResult<TagInfo> SerachTag(string keyword, int page, int rows);
+        PagingResult<TagInfo> SearchTag(string keyword, int page, int rows);
     }
 }

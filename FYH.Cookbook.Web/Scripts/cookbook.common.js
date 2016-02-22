@@ -1,4 +1,21 @@
-﻿$.extend({
+﻿
+String.prototype.replaceAll = function (search, replace) {
+    var regex = new RegExp(search, 'g');
+    return this.replace(regex, replace);
+};
+String.prototype.contains = function (str) {
+    if (this.indexOf(str) >= 0) return true;
+    else return false;
+};
+Array.prototype.contains = function (item) {
+    var isIn = false;
+    $.each(this, function (index, value) {
+        if (item === value) isIn = true;
+    });
+    return isIn;
+};
+
+$.extend({
     CbAjax: function (opts) {
         opts = $.extend({
             url: undefined,
@@ -37,6 +54,78 @@
 });
 
 $.fn.extend({
+    CbSerialize: function () {
+        var data = {},
+            serializeArray = [],
+            multiLevelArray = [];
+
+        var temp = [];
+        $.each(this.serializeArray(), function (i, v) {
+            if (!temp.contains(v.name)) {
+                temp.push(v.name);
+                serializeArray.push(v);
+            }
+        });
+        serializeArray = serializeArray.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
+
+        $.each(serializeArray, function (i, v) {
+            var names = v.name.split('.'),
+                nameList = [];
+
+            $.each(names, function (i, v) {
+                if (v.contains('[')) {
+                    nameList.push(v.substring(0, v.indexOf('[')));
+                    nameList.push(v.substring(v.indexOf('['), v.indexOf(']') + 1));
+                } else {
+                    nameList.push(v);
+                }
+            });
+
+            multiLevelArray.push({ names: nameList, value: v.value || '' });
+        });
+
+        if (multiLevelArray && multiLevelArray.length) {
+            var _convertName = function (array, deep) {
+                var items = [],
+                        currentItem = undefined;
+                $.each(array, function (i, v) {
+                    if (deep < v.names.length) {
+                        var name = v.names[deep];
+                        if (currentItem && currentItem.name === name) {
+                            currentItem.value.push(v);
+                        } else {
+                            currentItem = { name: name, value: [v] };
+                            items.push(currentItem);
+                        }
+                    }
+                });
+
+                if (items && items.length) {
+                    $.each(items, function (i, v) {
+                        if (v.name.contains('[')) {
+                            $.each(v.value, function (vi, vv) {
+                                v.value[vi].names[deep] = '[' + i + ']';
+                            });
+                        }
+
+                        _convertName(v.value, deep + 1);
+                    });
+                }
+            };
+            _convertName(multiLevelArray, 0);
+
+            $.each(multiLevelArray, function (i, v) {
+                var name = v.names.join('.').replaceAll('\\.\\[', '[');
+                if (data[name] === undefined) {
+                    data[name] = v.value;
+                }
+            });
+        }
+
+        return data;
+    },
     CbBindValidator: function() {
         var $forms = this.parents()
             .addBack()

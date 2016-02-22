@@ -60,6 +60,16 @@
     padding-top: 3px;
 }
 
+.checkbox-ingredient-row, .checkbox-tag-row {
+    height: 64px;
+    overflow: auto;
+}
+
+.checkbox-ingredient-col, .checkbox-tag-col {
+    height: 30px;
+    overflow: hidden;
+}
+
 .ingredient-item, .iamges-row {
     margin-bottom: 15px;
 }
@@ -81,17 +91,7 @@
     display: none;
 }
 
-/*@media print {
-    .div-to-print {
-        background-color: white;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        margin: 0;
-        padding: 15px;
-        font-size: 14px;
-        line-height: 18px;
-    }
-}*/
+.media-object {
+    width: 64px;
+    height: 50px;
+}

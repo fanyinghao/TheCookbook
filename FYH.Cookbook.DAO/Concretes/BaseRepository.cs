@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using FYH.Cookbook.Core.Attributes;
+using FYH.Cookbook.Core.Caches;
 using Spring.Data.NHibernate.Generic.Support;
 using FYH.Cookbook.DAO.Abstracts;
 using FYH.Cookbook.Model.Common;
+using FYH.Cookbook.Model.Enum;
+using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Transform;
+using NHibernate.Type;
 
 namespace FYH.Cookbook.DAO.Concretes
 {
@@ -153,6 +160,113 @@ namespace FYH.Cookbook.DAO.Concretes
 
                 var count = countCriteria.UniqueResult<int>();
                 var data = contentCriteria.List<T>();
+                return new PagingResult<T>
+                {
+                    Count = maxCount,
+                    TotalCount = count,
+                    Data = data
+                };
+            });
+        }
+
+        /// <summary>
+        /// Convert Scalar
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private IDictionary<string, IType> ConvertTypeScalar(Type type)
+        {
+            IDictionary<string, IType> scalars = null;
+            var cacheKey = string.Format("{0}{1}", "TYPESCALARS_", type.FullName);
+            if (CacheManager.MemoryCacheManager.Contains(cacheKey))
+                scalars = CacheManager.MemoryCacheManager.Get(cacheKey) as IDictionary<string, IType>;
+            else
+            {
+                scalars = new Dictionary<string, IType>();
+                if (!type.IsValueType && type != typeof(string))
+                {
+                    type.GetProperties()
+                        .ToList()
+                        .ForEach(p =>
+                        {
+                            if (p.GetCustomAttribute<IgnoreConvertTypeScalarAttribute>() == null)
+                                scalars.Add(p.Name, NHibernateUtil.GuessType(p.PropertyType));
+                        });
+                }
+                CacheManager.MemoryCacheManager.Set(cacheKey, scalars, CacheExpirationTypeEnum.None, null);
+            }
+
+            return scalars;
+        }
+
+        public PagingResult<T> ExecutePagingList<T>(string sql, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            var scalars = ConvertTypeScalar(typeof(T));
+            return ExecutePagingList<T>(sql, null, scalars, null, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            var scalars = ConvertTypeScalar(typeof(T));
+            return ExecutePagingList<T>(sql, orders, scalars, null, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, IType> scalars, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            return ExecutePagingList<T>(sql, null, scalars, null, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            var scalars = ConvertTypeScalar(typeof(T));
+            return ExecutePagingList<T>(sql, null, scalars, parameters, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, IType> scalars, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            return ExecutePagingList<T>(sql, orders, scalars, null, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            var scalars = ConvertTypeScalar(typeof(T));
+            return ExecutePagingList<T>(sql, orders, scalars, parameters, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, IType> scalars, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            return ExecutePagingList<T>(sql, null, scalars, parameters, firstIndex, maxCount);
+        }
+        public PagingResult<T> ExecutePagingList<T>(string sql, IDictionary<string, SqlSortedEnum> orders, IDictionary<string, IType> scalars, IDictionary<string, object> parameters, int firstIndex = 0, int maxCount = int.MaxValue)
+        {
+            return HibernateTemplate.Execute(session =>
+            {
+                var countQuery = session.CreateSQLQuery(string.Format("SELECT count (*) FROM ({0}) pagingcount", sql));
+                if (orders != null && orders.Count != 0)
+                {
+                    sql = string.Format(
+                        "{0} ORDER BY {1}",
+                        sql,
+                        string.Join(", ", orders.Select(o => string.Format("{0} {1}", o.Key, o.Value.ToString())))
+                    );
+                }
+                var contentQuery = session.CreateSQLQuery(sql);
+
+                if (scalars != null && scalars.Count != 0)
+                    foreach (var scalar in scalars)
+                        contentQuery.AddScalar(scalar.Key, scalar.Value);
+
+                if (parameters != null && parameters.Count != 0)
+                    foreach (var parameter in parameters)
+                    {
+                        countQuery.SetParameter(parameter.Key, parameter.Value);
+                        contentQuery.SetParameter(parameter.Key, parameter.Value);
+                    }
+
+                contentQuery.SetFirstResult(firstIndex);
+                contentQuery.SetMaxResults(maxCount);
+
+                HibernateTemplate.PrepareQuery(countQuery);
+                if (scalars != null && scalars.Count != 0)
+                    contentQuery.SetResultTransformer(new AliasToBeanResultTransformer(typeof(T)));
+                HibernateTemplate.PrepareQuery(contentQuery);
+
+                var count = countQuery.UniqueResult<int>();
+                var data = contentQuery.List<T>();
                 return new PagingResult<T>
                 {
                     Count = maxCount,

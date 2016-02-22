@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FYH.Cookbook.DAO.Abstracts;
+using FYH.Cookbook.Model.Common;
 using FYH.Cookbook.Model.CustomException;
 using FYH.Cookbook.Model.DBEntity;
+using FYH.Cookbook.Model.Enum;
 using FYH.Cookbook.Model.ViewModels;
 using FYH.Cookbook.Service.Abstracts;
 using NHibernate.Criterion;
@@ -16,6 +18,9 @@ namespace FYH.Cookbook.Service.Concretes
     public class RecipeService : IRecipeService
     {
         private IBaseRepository BaseRepository { get; set; }
+        private IRecipeRepository RecipeRepository { get; set; }
+        private IIngredientRepository IngredientRepository { get; set; }
+        private ITagRepository TagRepository { get; set; }
 
         public RecipeInfoViewModel GetRecipeInfo(int recipeId)
         {
@@ -63,30 +68,89 @@ namespace FYH.Cookbook.Service.Concretes
             // Add ingredient mappings
             foreach (var ingredient in viewModel.Ingredients)
             {
-                BaseRepository.AddEntity(new RecipeIngredientMapping
+                if (ingredient.IngredientId == 0)
                 {
-                    IngredientId = ingredient.IngredientId,
-                    RecipeId = viewModel.RecipeId.Value,
-                    Unit = ingredient.Unit,
-                    Quantity = ingredient.Quantity
-                });
+                    var ing = BaseRepository.GetEntityList<Ingredient>(new List<ICriterion>
+                    {
+                        Restrictions.Eq(Ingredient.COL_NAME, ingredient.Name)
+                    }).FirstOrDefault();
+                    if (ing == null)
+                    {
+                        ing = new Ingredient
+                        {
+                            Name = ingredient.Name
+                        };
+                        BaseRepository.AddOrUpdateEntity(ing);
+                    }
+                    BaseRepository.AddEntity(new RecipeIngredientMapping
+                    {
+                        IngredientId = ing.IngredientId.Value,
+                        RecipeId = viewModel.RecipeId.Value,
+                        Unit = ingredient.Unit,
+                        Quantity = ingredient.Quantity
+                    });
+                }
+                else
+                {
+                    BaseRepository.AddEntity(new RecipeIngredientMapping
+                    {
+                        IngredientId = ingredient.IngredientId,
+                        RecipeId = viewModel.RecipeId.Value,
+                        Unit = ingredient.Unit,
+                        Quantity = ingredient.Quantity
+                    });
+                }
             }
 
             // Add tag mappings
-            foreach (var id in viewModel.TagIds)
+            if (viewModel.TagIds != null)
+                foreach (var id in viewModel.TagIds)
+                {
+                    var mapping = new RecipeTagMapping
+                    {
+                        TagId = id,
+                        RecipeId = viewModel.RecipeId.Value
+                    };
+                    BaseRepository.AddEntity(mapping);
+                    viewModel.Tags.Add(new TagInfo
+                    {
+                        TagId = id,
+                        Name = mapping.Tag.Name,
+                        Description = mapping.Tag.Name
+                    });
+                }
+
+            // Add tag mappings
+            foreach (var tag in viewModel.Tags)
             {
-                var mapping = new RecipeTagMapping
+                if (tag.TagId == 0)
                 {
-                    TagId = id,
-                    RecipeId = viewModel.RecipeId.Value
-                };
-                BaseRepository.AddEntity(mapping);
-                viewModel.Tags.Add(new TagInfo
+                    var t = BaseRepository.GetEntityList<Tag>(new List<ICriterion>
+                    {
+                        Restrictions.Eq(Tag.COL_NAME, tag.Name)
+                    }).FirstOrDefault();
+                    if (t == null)
+                    {
+                        t = new Tag
+                        {
+                            Name = tag.Name
+                        };
+                        BaseRepository.AddOrUpdateEntity(t);
+                    }
+                    BaseRepository.AddEntity(new RecipeTagMapping
+                    {
+                        TagId = t.TagId.Value,
+                        RecipeId = viewModel.RecipeId.Value
+                    });
+                }
+                else
                 {
-                    TagId = id,
-                    Name = mapping.Tag.Name,
-                    Description = mapping.Tag.Name
-                });
+                    BaseRepository.AddEntity(new RecipeTagMapping
+                    {
+                        TagId = tag.TagId,
+                        RecipeId = viewModel.RecipeId.Value
+                    });
+                }
             }
 
             // Add images
@@ -95,6 +159,7 @@ namespace FYH.Cookbook.Service.Concretes
                 BaseRepository.AddEntity(new Image
                 {
                     Url = image.Url,
+                    RecipeId = viewModel.RecipeId,
                     Description = image.Description,
                     CreatedDate = DateTime.Now
                 });
@@ -190,6 +255,48 @@ namespace FYH.Cookbook.Service.Concretes
                 throw new RecipeNotFoundException();
             model.IsDeleted = true;
             BaseRepository.UpdateEntity(model);
+        }
+
+        public PagingResult<RecipeListItemModel> SearchRecipe(string keyword, IEnumerable<int?> ingredientIds, IEnumerable<int?> tagIds, string sortBy, SqlSortedEnum order, int page, int rows)
+        {
+            var columnName = Recipe.COL_RECIPEID;
+            if (Recipe.COL_CREATEDDATE.Equals(sortBy, StringComparison.CurrentCultureIgnoreCase))
+            {
+                columnName = Recipe.COL_CREATEDDATE;
+            }
+            else if (Recipe.COL_NAME.Equals(sortBy, StringComparison.CurrentCultureIgnoreCase))
+            {
+                columnName = Recipe.COL_NAME;
+            }
+            var orders = new Dictionary<string, SqlSortedEnum>
+            {
+                { columnName, order }
+            };
+            return RecipeRepository.SearchRecipe(keyword, ingredientIds, tagIds, orders, page, rows);
+        }
+
+        public IngredientsAndTagsInfo SearchIngredientsAndTags(string keyword, IEnumerable<int?> ingredientIds, IEnumerable<int?> tagIds)
+        {
+            return new IngredientsAndTagsInfo
+            {
+                Ingredients =
+                    IngredientRepository.SearchIngredient(keyword, ingredientIds, tagIds,
+                        new Dictionary<string, SqlSortedEnum>(), 1, int.MaxValue)
+                        .Data.Select(i => new IngredientInfo
+                        {
+                            IngredientId = i.IngredientId.Value,
+                            Name = i.Name
+                        }).ToList(),
+                Tags =
+                    TagRepository.SearchTag(keyword, ingredientIds, tagIds, new Dictionary<string, SqlSortedEnum>(), 1,
+                        int.MaxValue)
+                        .Data.Select(i => new TagInfo
+                        {
+                            TagId = i.TagId.Value,
+                            Name = i.Name,
+                            Description = i.Description
+                        }).ToList()
+            };
         }
     }
 }

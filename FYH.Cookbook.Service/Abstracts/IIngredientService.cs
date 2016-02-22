@@ -10,6 +10,6 @@ namespace FYH.Cookbook.Service.Abstracts
 {
     public interface IIngredientService
     {
-        PagingResult<IngredientInfo> SerachIngredient(string keyword, int page, int rows);
+        PagingResult<IngredientInfo> SearchIngredient(string keyword, int page, int rows);
     }
 }

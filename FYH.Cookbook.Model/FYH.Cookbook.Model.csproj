@@ -64,6 +64,7 @@
     <Compile Include="DBEntity\Tag.cs" />
     <Compile Include="Extensions\NHibernateExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Enum\SqlSortedEnum.cs" />
     <Compile Include="T4\DBEntityGenerator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -71,7 +72,11 @@
     </Compile>
     <Compile Include="ViewModels\ImageInfo.cs" />
     <Compile Include="ViewModels\IngredientInfo.cs" />
+    <Compile Include="ViewModels\IngredientsAndTagsInfo.cs" />
     <Compile Include="ViewModels\RecipeInfoViewModel.cs" />
+    <Compile Include="ViewModels\RecipeListItemModel.cs" />
+    <Compile Include="ViewModels\SearchParametersModel.cs" />
+    <Compile Include="ViewModels\SearchRecipeParametersModel.cs" />
     <Compile Include="ViewModels\TagInfo.cs" />
   </ItemGroup>
   <ItemGroup>

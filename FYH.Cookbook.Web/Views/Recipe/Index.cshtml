@@ -6,10 +6,11 @@
 @section scripts
 {
     @Scripts.Render("~/Scripts/jspdf.min.js")
-    @Scripts.Render("~/Scripts/recipe/recipe_jspdf.js")
+    @Scripts.Render("~/Scripts/recipe/recipe.detail.js")
 }
 
 <div class="row">
+    @Html.HiddenFor(m => m.RecipeId)
     @if (Model.Images.Any())
     {
         <div id="carousel-generic" class="carousel slide" data-ride="carousel">
@@ -63,17 +64,12 @@
                 <div class="col-lg-8">
                     <div class="recipe-ingredient">
                         <table class="table table-hover">
-                            <tr>
-                                <th>Ingredient</th>
-                                <th>Quantity</th>
-                                <th>Unit</th>
-                            </tr>
                             @foreach (var item in Model.Ingredients)
                             {
                                 <tr>
-                                    <td>@item.Name</td>
-                                    <td>@item.Quantity</td>
-                                    <td>@item.Unit</td>
+                                    <td>@Html.Raw(item.Quantity)</td>
+                                    <td>@Html.Raw(item.Unit)</td>
+                                    <td>@Html.Raw(item.Name)</td>
                                 </tr>
                             }
                         </table>
@@ -92,10 +88,10 @@
     </div>
     <div class="row">
         <div class="col-lg-1 pull-right">
-            @Html.ActionLink("Delete", "Delete", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger" })
+            @Html.ActionLink("Delete", "Delete", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger", id = "btnDel" })
         </div>
         <div class="col-lg-1 pull-right">
-            @Html.ActionLink("Edit", "Edit", new { Model.RecipeId } , new { @class = "btn btn-lg btn-danger" })
+            @Html.ActionLink("Edit", "Edit", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger" })
         </div>
         <div class="col-lg-1 pull-right">
             <button class="btn btn-lg btn-danger">Print</button>
