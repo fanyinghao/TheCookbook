@@ -321,6 +321,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jspdf.amd.min.js" />
+    <Content Include="Scripts\jspdf.debug.js" />
     <Content Include="Scripts\jspdf.min.js" />
     <Content Include="Scripts\jspdf.source.js" />
     <Content Include="Scripts\knockout-3.4.0.debug.js" />

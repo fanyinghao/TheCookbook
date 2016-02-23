@@ -11,9 +11,10 @@
 
 <div class="row">
     @Html.HiddenFor(m => m.RecipeId)
+    @Html.HiddenFor(m => m.Name)
     @if (Model.Images.Any())
     {
-        <div id="carousel-generic" class="carousel slide" data-ride="carousel">
+        <div id="carousel-generic" class="carousel slide print-hide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
                 @for (var i = 0; i < Model.Images.Count; i++)
@@ -45,7 +46,7 @@
         </div>
     }
 
-    <div class="recipe-content div-to-print">
+    <div class="recipe-content div-to-preview">
         <h1>@Model.Name</h1>
         @if (Model.Tags.Any())
         {
@@ -64,6 +65,11 @@
                 <div class="col-lg-8">
                     <div class="recipe-ingredient">
                         <table class="table table-hover">
+                            <tr>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th>Name</th>
+                            </tr>
                             @foreach (var item in Model.Ingredients)
                             {
                                 <tr>
@@ -86,7 +92,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row print-hide">
         <div class="col-lg-1 pull-right">
             @Html.ActionLink("Delete", "Delete", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger", id = "btnDel" })
         </div>
@@ -94,7 +100,7 @@
             @Html.ActionLink("Edit", "Edit", new { Model.RecipeId }, new { @class = "btn btn-lg btn-danger" })
         </div>
         <div class="col-lg-1 pull-right">
-            <button class="btn btn-lg btn-danger">Print</button>
+            <button class="btn btn-lg btn-danger" id="btnPreview">Print</button>
         </div>
     </div>
 </div>
